@@ -52,11 +52,11 @@ class Snake:
         Returns:
             None
         '''
-        for d in range(self.length):
+        for i in range(self.length):
             pygame.draw.rect(
                 display, 
                 colors["SNAKE"], 
-                (self.history[d][0], self.history[d][1], dimensions["SCALE"], dimensions["SCALE"])
+                (self.history[i][0], self.history[i][1], dimensions["SCALE"], dimensions["SCALE"])
             )
 
     def check_eaten(self):
@@ -89,22 +89,35 @@ class Snake:
 
     def death(self):
         '''
-        Placholder docstring.
+        Determines whether or not the user controlled Snake obj
+        has collided with itself.
+
+        Args:
+            None
+        
+        Returns:
+            True (bool): Only returned if Snake obj has collided with itself.
         '''
-        d = self.length - 1
-        while d > 0:
-            if abs(self.history[0][0] - self.history[d][0]) < dimensions["SCALE"] and abs(self.history[0][1] - self.history[d][1]) < dimensions["SCALE"] and self.length > 2:
+        i = self.length - 1
+        while i > 0:
+            if abs(self.history[0][0] - self.history[i][0]) < dimensions["SCALE"] and abs(self.history[0][1] - self.history[i][1]) < dimensions["SCALE"] and self.length > 2:
                 return True
-            d -= 1
+            i -= 1
 
     def update(self):
         '''
-        Placeholder docstring.
+        Updates user controlled Snake obj's self.history.
+
+        Args:
+            None
+        
+        Returns:
+            None
         '''
-        d = self.length - 1
-        while d > 0:
-            self.history[d] = copy.deepcopy(self.history[d-1])
-            d -= 1
+        i = self.length - 1
+        while i > 0:
+            self.history[i] = copy.deepcopy(self.history[i-1])
+            i -= 1
         self.history[0][0] += self.x_dir * dimensions["SCALE"]
         self.history[0][1] += self.y_dir * dimensions["SCALE"]
 
