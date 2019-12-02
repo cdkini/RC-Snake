@@ -1,4 +1,5 @@
 import copy
+import pyautogui as pag
 import pygame
 import random
 import sys
@@ -34,8 +35,8 @@ class Snake:
         Returns:
             None
         '''
-        self.x_start = dimensions["WIDTH"] / 2 - dimensions["SCALE"]
-        self.y_start = dimensions["HEIGHT"] / 2 - dimensions["SCALE"]
+        self.x_start = dimensions["WIDTH"] / 2 
+        self.y_start = dimensions["HEIGHT"] / 2 
         self.x_dir = 1
         self.y_dir = 0
         self.history = [[self.x_start, self.y_start]]
@@ -53,11 +54,18 @@ class Snake:
             None
         '''
         for i in range(self.length):
-            pygame.draw.rect(
-                display, 
-                colors["SNAKE"], 
-                (self.history[i][0], self.history[i][1], dimensions["SCALE"], dimensions["SCALE"])
-            )
+            if not i % 2:
+                pygame.draw.rect(
+                    display, 
+                    colors["SNAKE_Y"], 
+                    (self.history[i][0], self.history[i][1], dimensions["SCALE"], dimensions["SCALE"])
+                )
+            else:
+                pygame.draw.rect(
+                    display, 
+                    colors["SNAKE_B"], 
+                    (self.history[i][0], self.history[i][1], dimensions["SCALE"], dimensions["SCALE"])
+                )
 
     def check_eaten(self):
         '''
@@ -100,7 +108,8 @@ class Snake:
         '''
         i = self.length - 1
         while i > 0:
-            if abs(self.history[0][0] - self.history[i][0]) < dimensions["SCALE"] and abs(self.history[0][1] - self.history[i][1]) < dimensions["SCALE"] and self.length > 2:
+            if abs(self.history[0][0] - self.history[i][0]) < dimensions["SCALE"] and \
+            abs(self.history[0][1] - self.history[i][1]) < dimensions["SCALE"] and self.length > 2:
                 return True
             i -= 1
 
@@ -171,9 +180,10 @@ def show_score():
         None
     '''
     font = pygame.font.SysFont("Garamond", 15)
-    text = font.render("Score: " + str(score), True, colors["SNAKE"])
+    text = font.render("Score: " + str(score), True, colors["SNAKE_Y"])
     display.blit(text, (dimensions["SCALE"], dimensions["SCALE"]))
 
+user_scores = []
 
 def main():
 
@@ -191,6 +201,7 @@ def main():
                 sys.exit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_q:
+                    pag.prompt(text="Please input your name.", title='User')
                     pygame.quit()
                     sys.exit()
 
@@ -223,6 +234,8 @@ def main():
             player.grow()
 
         if player.death():
+            user_name = input('Please input your name: ')
+            user_scores.append((user_name, score))
             score = 0
             font = pygame.font.SysFont("Garamond", 25)
             text = font.render("Game over!", True, colors["MESSAGE"])
@@ -241,15 +254,11 @@ def main():
         if player.history[0][1] < 0:
             player.history[0][1] = dimensions["HEIGHT"]
 
+
         pygame.display.update()
         pygame.time.Clock().tick(30) # Speed or difficulty of the game.
+    
 
 if __name__=="__main__":
     main()
-
-'''
-Additional Tasks to Consider:
-Easy - Alternate colors of snake
-Medium - Difficulty levels / multipliers
-Hard - Add leaderboard
-'''
+    print(user_scores)
